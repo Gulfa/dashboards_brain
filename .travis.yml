@@ -1,0 +1,17 @@
+language: minimal
+
+services:
+- docker
+
+before_install:
+- bash travis/make.sh
+
+install:
+- export package=$(pwd)
+- docker pull fhix/dr:latest
+- docker run --rm -v $package:/package fhix/dr:latest R -e "devtools::check('/package/')"
+
+after_success:
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash travis/after-success.sh
+
+

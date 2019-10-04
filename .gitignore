@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+inst/extdata/.~lock.norwayLocations.xlsx#
+..Rcheck
+docs/*
+inst/doc
+*.Rcheck*
+travis/.DS_Store

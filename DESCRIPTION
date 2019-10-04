@@ -1,0 +1,27 @@
+Package: brain
+Title: What the Package Does (one line, title case)
+Version: 2019.03.22
+Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Description: What the package does (one paragraph).
+Depends: R (>= 3.4.0)
+Imports:
+  data.table,
+  R6,
+  fd,
+  fhidata,
+  attrib,
+  ggplot2,
+  magrittr,
+  dplyr,
+  fhi,
+  glue,
+  zoo
+Suggests:
+  testthat,
+    knitr,
+    rmarkdown
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Additional_repositories: https://folkehelseinstituttet.github.io/drat/, https://raubreywhite.github.io/drat/, https://euromomonetwork.github.io/drat/
