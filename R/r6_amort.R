@@ -8,16 +8,22 @@ amort <- R6::R6Class(
   list(
     run_all = function() {
       # check to see if it can run
-      if(!fd::exists_rundate("normomo")) return()
-      if(!fd::exists_rundate("sykdomspuls")) return()
-      if(!fd::exists_rundate("weather")) return()
+      if (!fd::exists_rundate("normomo")) {
+        return()
+      }
+      if (!fd::exists_rundate("sykdomspuls")) {
+        return()
+      }
+      if (!fd::exists_rundate("weather")) {
+        return()
+      }
 
       rundate <- fd::get_rundate()
 
       run <- TRUE
-      if(fd::exists_rundate("brain_amort")){
-        if(rundate[package == "brain_amort"]$date_extraction >= rundate[package == "normomo"]$date_extraction) run <- FALSE
-        if(rundate[package == "brain_amort"]$date_extraction >= rundate[package == "sykdomspuls"]$date_extraction) run <- FALSE
+      if (fd::exists_rundate("brain_amort")) {
+        if (rundate[package == "brain_amort"]$date_extraction >= rundate[package == "normomo"]$date_extraction) run <- FALSE
+        if (rundate[package == "brain_amort"]$date_extraction >= rundate[package == "sykdomspuls"]$date_extraction) run <- FALSE
       }
 
       if (!run & fd::config$is_production) {
@@ -47,7 +53,7 @@ amort <- R6::R6Class(
   )
 )
 
-amort_get_fits <- function(year_max=fhi::isoyear_n(), year_min=year_max-2) {
+amort_get_fits <- function(year_max = fhi::isoyear_n(), year_min = year_max - 2) {
   weather <- fd::get_weather(impute_missing = TRUE)
 
   locs <- unique(c("norge", fhidata::norway_locations_current$county_code))
@@ -72,7 +78,7 @@ amort_get_fits <- function(year_max=fhi::isoyear_n(), year_min=year_max-2) {
 
     dates <- intersect(weather$date, d$date)
     dates <- intersect(dates, ils$date)
-    dates[fhi::isoyear_n(as.Date(dates,origin="1970-01-01")) %in% year_min:year_max]
+    dates[fhi::isoyear_n(as.Date(dates, origin = "1970-01-01")) %in% year_min:year_max]
 
     w <- weather[date %in% dates & location_code == loc]
     d <- d[date %in% dates]
@@ -82,7 +88,7 @@ amort_get_fits <- function(year_max=fhi::isoyear_n(), year_min=year_max-2) {
 
     outcome <- d$nbc
     temp <- w$tx
-    ils <- ils$ils*10
+    ils <- ils$ils * 10
 
     fits[[i]] <- attrib::fit_attrib(
       dates = dates,
@@ -196,7 +202,7 @@ amort_results <- function() {
   seasons <- fhi::isoyear_c(x$dates)[index_summers]
   summers <- split(number_summers, seasons)
 
-  a <- attrib::get_attrib(x$counties, use_blup = T, tag = "tx", range=c(25,100), sub=summers)
+  a <- attrib::get_attrib(x$counties, use_blup = T, tag = "tx", range = c(25, 100), sub = summers)
   a$season <- names(summers)
   a$location_code <- "norge"
   a$exposure <- "tx"
@@ -204,16 +210,16 @@ amort_results <- function() {
 
   index_winters <- !fhi::isoweek_n(x$dates) %in% 21:39
   number_winters <- which(index_winters)
-  seasons <- fhi::season(fhi::isoyearweek(x$dates), start_week=40)[index_winters]
+  seasons <- fhi::season(fhi::isoyearweek(x$dates), start_week = 40)[index_winters]
   winters <- split(number_winters, seasons)[-1]
 
-  a <- attrib::get_attrib(x$counties, use_blup = T, tag = "tx", range=c(-100, -5), sub=winters)
+  a <- attrib::get_attrib(x$counties, use_blup = T, tag = "tx", range = c(-100, -5), sub = winters)
   a$season <- names(winters)
   a$location_code <- "norge"
   a$exposure <- "tx"
   a$exposure_value <- "cold"
 
-  a <- attrib::get_attrib(x$counties, use_blup = T, tag = "ilsper1000", range=c(1,1000), sub=winters)
+  a <- attrib::get_attrib(x$counties, use_blup = T, tag = "ilsper1000", range = c(1, 1000), sub = winters)
   a$season <- names(winters)
   a$location_code <- "norge"
   a$exposure <- "ilsper1000"
@@ -221,7 +227,7 @@ amort_results <- function() {
 
   index_winters <- !fhi::isoweek_n(x$dates) %in% 21:39
   number_winters <- which(index_winters)
-  seasons <- fhi::season(fhi::isoyearweek(x$dates), start_week=40)[index_winters]
+  seasons <- fhi::season(fhi::isoyearweek(x$dates), start_week = 40)[index_winters]
   winters <- split(number_winters, seasons)[-1]
 
 
