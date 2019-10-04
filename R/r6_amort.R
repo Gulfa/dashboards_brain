@@ -41,12 +41,12 @@ amort <- R6::R6Class(
   )
 )
 
-amort_get_fits <- function(){
+amort_get_fits <- function() {
   weather <- fd::get_weather(impute_missing = TRUE)
 
-  locs <- unique(c("norge",fhidata::norway_locations_current$county_code))
+  locs <- unique(c("norge", fhidata::norway_locations_current$county_code))
   fits <- vector("list", length = length(locs))
-  for(i in seq_along(locs)){
+  for (i in seq_along(locs)) {
     loc <- locs[i]
     mem <- fd::tbl("spuls_mem_results") %>%
       dplyr::filter(tag == "influensa") %>%
@@ -54,9 +54,9 @@ amort_get_fits <- function(){
       dplyr::collect() %>%
       fd::latin1_to_utf8()
 
-    ils <- data.table(date=seq.Date(min(mem$date),max(mem$date),1))
-    ils[mem,on="date",ils:=rate]
-    ils[,ils:=zoo::na.locf(ils, fromLast=T)]
+    ils <- data.table(date = seq.Date(min(mem$date), max(mem$date), 1))
+    ils[mem, on = "date", ils := rate]
+    ils[, ils := zoo::na.locf(ils, fromLast = T)]
 
     d <- fd::tbl("normomo_daily_results") %>%
       dplyr::filter(location_code == !!loc) %>%
@@ -67,7 +67,7 @@ amort_get_fits <- function(){
     dates <- intersect(weather$date, d$date)
     dates <- intersect(dates, ils$date)
 
-    w <- weather[date %in% dates & location_code==loc]
+    w <- weather[date %in% dates & location_code == loc]
     d <- d[date %in% dates]
     ils <- ils[date %in% dates]
     dates <- sort(dates)
@@ -89,7 +89,7 @@ amort_get_fits <- function(){
         "ils" = "linear"
       ),
       exposure_knots = list(
-        "tx" = c(-10,20)
+        "tx" = c(-10, 20)
       ),
       exposure_boundary_knots = list(
         "tx" = c(-25, 35)
@@ -104,14 +104,14 @@ amort_get_fits <- function(){
   return(list(
     location_codes = locs,
     dates = dates,
-    norge=fits[[1]],
-    counties=x
+    norge = fits[[1]],
+    counties = x
   ))
 }
 
 
 
-amort_upload_rrs <- function(){
+amort_upload_rrs <- function() {
   x <- amort_get_fits()
 
   brain_amort_rr_field_types <- c(
@@ -149,13 +149,13 @@ amort_upload_rrs <- function(){
   year_train_max <- fhi::isoyear_n(max(x$dates))
   age <- "Totalt"
 
-  for(i in 1:(length(x$counties)+1)){
-    if(i==1){
+  for (i in 1:(length(x$counties) + 1)) {
+    if (i == 1) {
       attrib_small <- x$norge$attrib_fixed
     } else {
-      attrib_small <- x$counties[[i-1]]$attrib_blup
+      attrib_small <- x$counties[[i - 1]]$attrib_blup
     }
-    for(ex in names(attrib_small$pred)){
+    for (ex in names(attrib_small$pred)) {
       exposure <- ex
       exposure_value <- as.numeric(names(attrib_small$pred[[ex]]$allRRfit))
       rr_est <- as.numeric(attrib_small$pred[[ex]]$allRRfit)
