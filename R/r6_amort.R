@@ -148,6 +148,7 @@ amort_upload_rrs <- function() {
 
   rr_x <- fd::schema$new(
     db_config = CONFIG$db_config,
+    db_config = fd::config$db_config,
     db_table = glue::glue("brain_amort_rr"),
     db_field_types = brain_amort_rr_field_types,
     db_load_folder = "/xtmp/",
@@ -253,7 +254,7 @@ amort_results <- function() {
   )
 
   rr_x <- fd::schema$new(
-    db_config = CONFIG$db_config,
+    db_config = fd::config$db_config,
     db_table = glue::glue("brain_amort_rr"),
     db_field_types = brain_amort_rr_field_types,
     db_load_folder = "/xtmp/",
