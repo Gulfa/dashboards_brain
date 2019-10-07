@@ -15,7 +15,8 @@ Imports:
   dplyr,
   fhi,
   glue,
-  zoo
+  zoo,
+  lubridate
 Suggests:
   testthat,
     knitr,
