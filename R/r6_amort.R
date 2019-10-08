@@ -31,7 +31,7 @@ amort <- R6::R6Class(
         return()
       }
 
-      fd::msg("Brain amort - creating/uploading RRs", slack=T)
+      fd::msg("Brain amort - creating/uploading RRs", slack = T)
       amort_upload_rrs()
 
       date_extraction <- max(
@@ -56,9 +56,8 @@ amort <- R6::R6Class(
 )
 
 amort_get_fits <- function(
-  year_max = fhi::isoyear_n(),
-  year_min = year_max - 2
-  ) {
+                           year_max = fhi::isoyear_n(),
+                           year_min = year_max - 2) {
   weather <- fd::get_weather(impute_missing = TRUE)
 
   locs <- unique(c("norge", fhidata::norway_locations_current$county_code))

@@ -2,7 +2,7 @@
   fd::initialize(
     package = "brain",
     load_package = FALSE,
-    silent=TRUE
+    silent = TRUE
   )
 
   tryCatch({

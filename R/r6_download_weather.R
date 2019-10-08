@@ -9,7 +9,7 @@ weather_download <- R6::R6Class(
     run_all = function() {
       # weather_download
       if (actions[["weather_download"]]$can_perform_action()) {
-        fd::msg("Brain updating weather", slack=T)
+        fd::msg("Brain updating weather", slack = T)
         fd::update_weather()
         actions[["weather_download"]]$action_performed()
       }
