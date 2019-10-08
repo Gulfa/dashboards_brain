@@ -8,9 +8,15 @@ amort <- R6::R6Class(
   list(
     run_all = function() {
       # check to see if it can run
-      if (!fd::exists_rundate("normomo")) return()
-      if (!fd::exists_rundate("sykdomspuls")) return()
-      if (!fd::exists_rundate("weather")) return()
+      if (!fd::exists_rundate("normomo")) {
+        return()
+      }
+      if (!fd::exists_rundate("sykdomspuls")) {
+        return()
+      }
+      if (!fd::exists_rundate("weather")) {
+        return()
+      }
 
       rundate <- fd::get_rundate()
 
@@ -22,13 +28,15 @@ amort <- R6::R6Class(
       }
       if (rundate[package == "normomo"]$date_results != rundate[package == "sykdomspuls"]$date_results) run <- FALSE
 
-      if (!run & fd::config$is_production) return()
+      if (!run & fd::config$is_production) {
+        return()
+      }
 
       fd::msg("Brain amort - creating/uploading RRs", slack = T)
       amort_upload_rrs()
 
       years <- seq(2012, fhi::isoyear_n(), 1)
-      for(i in years){
+      for (i in years) {
         fd::msg(glue::glue("Brain amort - estimating numbers {i}"))
         amort_results(year_max = i)
       }
@@ -56,8 +64,7 @@ amort <- R6::R6Class(
 
 amort_get_fits <- function(
                            year_max = fhi::isoyear_n(),
-                           year_min = year_max - 2
-                           ) {
+                           year_min = year_max - 2) {
   weather <- fd::get_weather(impute_missing = TRUE)
 
   locs <- unique(c("norge", fhidata::norway_locations_current$county_code))
@@ -127,9 +134,8 @@ amort_get_fits <- function(
 }
 
 amort_upload_rrs <- function(
-  year_max = fhi::isoyear_n(),
-  year_min = year_max - 2
-) {
+                             year_max = fhi::isoyear_n(),
+                             year_min = year_max - 2) {
   x <- amort_get_fits(
     year_max = year_max,
     year_min = year_min
@@ -202,10 +208,8 @@ amort_upload_rrs <- function(
 
 
 amort_results <- function(
-  year_max = fhi::isoyear_n(),
-  year_min = year_max - 2
-) {
-
+                          year_max = fhi::isoyear_n(),
+                          year_min = year_max - 2) {
   brain_amort_results_field_types <- c(
     "granularity_time" = "TEXT",
     "granularity_geo" = "TEXT",
@@ -261,7 +265,7 @@ amort_results <- function(
   a$age <- "Totalt"
   a$season <- names(summers)
   a$yrwk <- glue::glue("{a$season}-21")
-  a[fhidata::days, on="yrwk", date:=sun]
+  a[fhidata::days, on = "yrwk", date := sun]
   a$exposure <- "tx"
   a$exposure_value <- "hot"
 
@@ -281,7 +285,7 @@ amort_results <- function(
   a$age <- "Totalt"
   a$season <- names(winters)
   a$yrwk <- glue::glue("{stringr::str_sub(a$season,1,4)}-40")
-  a[fhidata::days, on="yrwk", date:=sun]
+  a[fhidata::days, on = "yrwk", date := sun]
   a$exposure <- "tx"
   a$exposure_value <- "cold"
 
@@ -295,7 +299,7 @@ amort_results <- function(
   a$age <- "Totalt"
   a$season <- names(winters)
   a$yrwk <- glue::glue("{stringr::str_sub(a$season,1,4)}-40")
-  a[fhidata::days, on="yrwk", date:=sun]
+  a[fhidata::days, on = "yrwk", date := sun]
   a$exposure <- "ilsper1000"
   a$exposure_value <- "any"
 
