@@ -25,11 +25,13 @@ amort <- R6::R6Class(
         if (rundate[package == "brain_amort"]$date_extraction >= rundate[package == "normomo"]$date_extraction) run <- FALSE
         if (rundate[package == "brain_amort"]$date_extraction >= rundate[package == "sykdomspuls"]$date_extraction) run <- FALSE
       }
+      if (rundate[package == "normomo"]$date_results != rundate[package == "sykdomspuls"]$date_results) run <- FALSE
 
       if (!run & fd::config$is_production) {
         return()
       }
 
+      fd::msg("Brain amort - creating/uploading RRs", slack=T)
       amort_upload_rrs()
 
       date_extraction <- max(
@@ -53,7 +55,10 @@ amort <- R6::R6Class(
   )
 )
 
-amort_get_fits <- function(year_max = fhi::isoyear_n(), year_min = year_max - 2) {
+amort_get_fits <- function(
+  year_max = fhi::isoyear_n(),
+  year_min = year_max - 2
+  ) {
   weather <- fd::get_weather(impute_missing = TRUE)
 
   locs <- unique(c("norge", fhidata::norway_locations_current$county_code))
@@ -78,7 +83,7 @@ amort_get_fits <- function(year_max = fhi::isoyear_n(), year_min = year_max - 2)
 
     dates <- intersect(weather$date, d$date)
     dates <- intersect(dates, ils$date)
-    dates[fhi::isoyear_n(as.Date(dates, origin = "1970-01-01")) %in% year_min:year_max]
+    dates <- dates[fhi::isoyear_n(as.Date(dates, origin = "1970-01-01")) %in% year_min:year_max]
 
     w <- weather[date %in% dates & location_code == loc]
     d <- d[date %in% dates]

@@ -1,12 +1,13 @@
 .onLoad <- function(libname, pkgname) {
   fd::initialize(
-    package = "ui",
-    load_package = FALSE
+    package = "brain",
+    load_package = FALSE,
+    silent=TRUE
   )
 
   tryCatch({
     actions[["weather_download"]] <- fd::action$new(
-      key = "ui_weather_download",
+      key = "brain_weather_download",
       value = lubridate::today(),
       dev_always_performs = TRUE,
       production_days = c(1:7),

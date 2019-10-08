@@ -2,8 +2,6 @@ fd::initialize("brain")
 suppressMessages(library(data.table))
 suppressMessages(library(ggplot2))
 
-fd::update_weather()
+weather_download$new()$run_all()
 
-# Set up data
-model <- amort$new()
-model$run_all()
+amort$new()$run_all()
